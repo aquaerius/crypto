@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-import urllib2
+import requests
 import json
 import argparse
 
@@ -34,18 +34,19 @@ class ProfitCoin(object):
         self.json_obj = self.get_json()
 
     def get_json(self):
-        url_opener = urllib2.build_opener()
-        url_opener.addheaders = [('User-Agent', 'Mozilla/5.0')]
+        """url_opener = urllib2.build_opener()
+        url_opener.addheaders = [('User-Agent', 'Mozilla/5.0')]"""
         try:
-            response = url_opener.open(self.url)
-            string = response.read().decode('utf-8')
-            json_obj = json.loads(string)
+            response = requests.get(self.url)
+            #string = response.decode('utf-8')
+            #json_obj = json.loads(string)
+            json_obj = response.json()
         except:
             json_obj = {'coins': {}}
         return json_obj
 
     def print_json(self, json_obj):
-        print json.dumps(json_obj, indent=4, sort_keys=True),
+        print(json.dumps(json_obj, indent=4, sort_keys=True))
 
     def set_coin_list(self):
         self.coin_list = self.get_coin_list()
@@ -70,7 +71,7 @@ class ProfitCoin(object):
         return sorted_list
 
     def print_coin_list(self):
-        print self.coin_list or None
+        print(self.coin_list or None)
 
 
 def parse_args():
@@ -93,9 +94,9 @@ def main():
     profit_coin=ProfitCoin(args.source)
     display_count=int(args.num)
     if not profit_coin.coin_list is None:
-        print ' '.join([k['coin'] for k in profit_coin.coin_list[:display_count]]),
+        print(' '.join([k['coin'] for k in profit_coin.coin_list[:display_count]]))
     else:
-        print '',
+        print('')
 
 
 if __name__ == '__main__':
